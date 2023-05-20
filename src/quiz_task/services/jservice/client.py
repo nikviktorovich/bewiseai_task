@@ -11,7 +11,17 @@ from quiz_task.services.jservice import serializers
 API_ROOT = 'https://jservice.io/'
 
 
-class AsyncQuestionsAPIClient:
+class AbstractAsyncQuestionsAPIClient:
+    """Abstract client for JService quiz API"""
+    async def random(
+        self,
+        count: int,
+    ) -> List[quiz_task.modules.quiz.domain.models.Quiz]:
+        raise NotImplementedError()
+
+
+class AsyncQuestionsAPIClient(AbstractAsyncQuestionsAPIClient):
+    """Client for JService quiz API"""
     session: aiohttp.ClientSession
 
 

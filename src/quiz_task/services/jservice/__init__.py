@@ -1,2 +1,3 @@
+from quiz_task.services.jservice.client import AbstractAsyncQuestionsAPIClient
 from quiz_task.services.jservice.client import AsyncQuestionsAPIClient
 from quiz_task.services.jservice.serializers import JServiceQuiz
