@@ -9,7 +9,7 @@ def get_postgres_connection_url() -> str:
     # Using environ[...] instead of environ.get(...) to raise exception
     # in case of missing some of the crucial variables
     db_name = os.environ['POSTGRES_DB']
-    username = os.environ['POSTGRES_USERNAME']
+    username = os.environ['POSTGRES_USER']
     password = os.environ['POSTGRES_PASSWORD']
     host = os.environ.get('POSTGRES_HOST', '127.0.0.1')
     port = os.environ.get('POSTGRES_PORT', '5432')
