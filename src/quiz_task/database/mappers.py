@@ -9,6 +9,6 @@ def start_mappers() -> None:
     registry = sqlalchemy.orm.registry()
 
     registry.map_imperatively(
-        quiz_task.modules.quiz.domain.models,
-        quiz_task.modules.quiz.database.models,
+        quiz_task.modules.quiz.domain.models.Quiz,
+        quiz_task.modules.quiz.database.models.Quiz,
     )
