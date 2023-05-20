@@ -1,0 +1,2 @@
+from quiz_task.common.errors.repositories import RepositoryError
+from quiz_task.common.errors.repositories import EntityNotFoundError
