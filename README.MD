@@ -4,6 +4,12 @@ This is a test task from _bewise.ai_ company
 # Installation and deployment
 To install and deploy this project you'll need Docker (`https://docs.docker.com/engine/install/`).
 
+The first step is cloning the repository:
+```bash
+git clone https://github.com/nikviktorovich/bewiseai_task.git
+cd bewiseai_task
+```
+
 The next step is running `docker compose`:
 ```bash
 POSTGRES_DB=bewiseaidb \
@@ -32,6 +38,11 @@ curl -X 'POST' \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
   -d '{"questions_num": 3}'
+```
+
+To stop and remove the containers use:
+```bash
+docker compose down
 ```
 
 # Endpoints
