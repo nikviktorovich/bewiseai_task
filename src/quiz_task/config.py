@@ -1,7 +1,7 @@
 import os
 
 import sqlalchemy
-import sqlalchemy.engine
+import sqlalchemy.ext.asyncio
 
 
 def get_postgres_connection_url() -> str:
@@ -13,11 +13,11 @@ def get_postgres_connection_url() -> str:
     password = os.environ['POSTGRES_PASSWORD']
     host = os.environ.get('POSTGRES_HOST', '127.0.0.1')
     port = os.environ.get('POSTGRES_PORT', '5432')
-    connection_url = f'postgresql://{username}:{password}@{host}:{port}/{db_name}'
+    connection_url = f'postgresql+asyncpg://{username}:{password}@{host}:{port}/{db_name}'
     return connection_url
 
 
-def get_database_engine() -> sqlalchemy.engine.Engine:
+def get_database_engine() -> sqlalchemy.ext.asyncio.AsyncEngine:
     connection_url = get_postgres_connection_url()
-    engine = sqlalchemy.create_engine(url=connection_url)
+    engine = sqlalchemy.ext.asyncio.create_async_engine(url=connection_url)
     return engine

@@ -42,7 +42,7 @@ async def _retrieve_unique_quizzes(
             continue
 
         # Filtering quizzes from previously used ones (from DB)
-        unique_quizzes = _filter_quizzes(chunk, uow)
+        unique_quizzes = await _filter_quizzes(chunk, uow)
 
         result_quizzes.extend(unique_quizzes)
         used_quizzes.update(quiz.id for quiz in unique_quizzes)
@@ -50,11 +50,11 @@ async def _retrieve_unique_quizzes(
     return result_quizzes
 
 
-def _filter_quizzes(
+async def _filter_quizzes(
     quizzes: List[quiz_task.modules.quiz.domain.models.Quiz],
     uow: quiz_task.modules.quiz.unit_of_work.AbstractQuizUnitOfWork,
 ) -> List[quiz_task.modules.quiz.domain.models.Quiz]:
     quiz_ids = [quiz.id for quiz in quizzes]
-    non_unique_quizzes = uow.quizzes.list_by_id_in(quiz_ids)
+    non_unique_quizzes = await uow.quizzes.list_by_id_in(quiz_ids)
     non_unique_quizzes_set = set(quiz.id for quiz in non_unique_quizzes)
     return [quiz for quiz in quizzes if quiz.id not in non_unique_quizzes_set]

@@ -1,6 +1,6 @@
 from typing import Optional
 
-import sqlalchemy
+import sqlalchemy.ext.asyncio
 import sqlalchemy.orm
 
 import quiz_task.config
@@ -11,50 +11,53 @@ class AbstractQuizUnitOfWork:
     quizzes: repositories.AbstractQuizRepository
 
 
-    def commit(self) -> None:
+    async def commit(self) -> None:
         raise NotImplementedError()
     
 
-    def rollback(self) -> None:
+    async def rollback(self) -> None:
         raise NotImplementedError()
     
 
-    def __enter__(self) -> 'AbstractQuizUnitOfWork':
+    async def __aenter__(self) -> 'AbstractQuizUnitOfWork':
         raise NotImplementedError()
     
 
-    def __exit__(self, *args, **kwargs) -> None:
+    async def __aexit__(self, *args, **kwargs) -> None:
         raise NotImplementedError()
 
 
 class SQLAlchemyQuizUnitOfWork(AbstractQuizUnitOfWork):
-    session_factory: sqlalchemy.orm.sessionmaker
-    session: sqlalchemy.orm.Session
+    session_factory: sqlalchemy.ext.asyncio.async_sessionmaker
+    session: sqlalchemy.ext.asyncio.AsyncSession
 
 
     def __init__(
         self,
-        engine: Optional[sqlalchemy.engine.Engine] = None,
+        engine: Optional[sqlalchemy.ext.asyncio.AsyncEngine] = None,
     ) -> None:
         if engine is None:
             engine = quiz_task.config.get_database_engine()
         
-        self.session_factory = sqlalchemy.orm.sessionmaker(bind=engine)
+        self.session_factory = sqlalchemy.ext.asyncio.async_sessionmaker(
+            bind=engine,
+            expire_on_commit=False,
+        )
     
 
-    def commit(self) -> None:
-        self.session.commit()
+    async def commit(self) -> None:
+        await self.session.commit()
     
 
-    def rollback(self) -> None:
-        self.session.rollback()
+    async def rollback(self) -> None:
+        await self.session.rollback()
     
 
-    def __enter__(self) -> 'AbstractQuizUnitOfWork':
-        self.session = self.session_factory()
+    async def __aenter__(self) -> 'AbstractQuizUnitOfWork':
+        self.session: sqlalchemy.ext.asyncio.AsyncSession = self.session_factory()
         self.quizzes = repositories.SQLAlchemyQuizRepository(self.session)
         return self
     
 
-    def __exit__(self, *args, **kwargs) -> None:
-        self.session.close()
+    async def __aexit__(self, *args, **kwargs) -> None:
+        await self.session.close()

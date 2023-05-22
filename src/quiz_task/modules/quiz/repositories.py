@@ -1,6 +1,8 @@
 from typing import List
 
 import sqlalchemy.orm
+import sqlalchemy.ext.asyncio
+from sqlalchemy import select
 
 import quiz_task.common.errors
 import quiz_task.modules.quiz.database.models
@@ -9,7 +11,7 @@ from quiz_task.modules.quiz.domain import models
 
 class AbstractQuizRepository:
     """Abstract quiz repository"""
-    def list(self, **filters) -> List[models.Quiz]:
+    async def list(self, **filters) -> List[models.Quiz]:
         """Returns list of all matching instances
         
         Args:
@@ -18,7 +20,7 @@ class AbstractQuizRepository:
         raise NotImplementedError()
     
 
-    def get(self, quiz_id: int) -> models.Quiz:
+    async def get(self, quiz_id: int) -> models.Quiz:
         """Returns an instance with the specified id
         
         Raises:
@@ -27,7 +29,7 @@ class AbstractQuizRepository:
         raise NotImplementedError()
     
 
-    def list_by_id_in(self, ids: List[int]) -> List[models.Quiz]:
+    async def list_by_id_in(self, ids: List[int]) -> List[models.Quiz]:
         """Returns all instances which have their ids contained in the list"""
         raise NotImplementedError()
 
@@ -44,24 +46,24 @@ class AbstractQuizRepository:
 
 class SQLAlchemyQuizRepository(AbstractQuizRepository):
     """Quiz repository implementation bound to SQLAlchemy session"""
-    session: sqlalchemy.orm.Session
+    session: sqlalchemy.ext.asyncio.AsyncSession
 
 
-    def __init__(self, session: sqlalchemy.orm.Session) -> None:
+    def __init__(self, session: sqlalchemy.ext.asyncio.AsyncSession) -> None:
         self.session = session
 
 
-    def _get_instance_set(self) -> sqlalchemy.orm.Query:
-        return self.session.query(models.Quiz)
-
-
-    def list(self, **filters) -> List[models.Quiz]:
-        instances = self._get_instance_set().filter_by(**filters).all()
-        return instances
+    async def list(self, **filters) -> List[models.Quiz]:
+        q = select(models.Quiz).filter_by(**filters)
+        scalars = await self.session.scalars(q)
+        instances = scalars.all()
+        return list(instances)
     
 
-    def get(self, quiz_id: int) -> models.Quiz:
-        instance = self._get_instance_set().filter_by(id=quiz_id).first()
+    async def get(self, quiz_id: int) -> models.Quiz:
+        q = select(models.Quiz).filter_by(id=quiz_id).limit(1)
+        scalars = await self.session.scalars(q)
+        instance = scalars.first()
         
         if instance is None:
             raise quiz_task.common.errors.EntityNotFoundError(
@@ -71,11 +73,13 @@ class SQLAlchemyQuizRepository(AbstractQuizRepository):
         return instance
     
 
-    def list_by_id_in(self, ids: List[int]) -> List[models.Quiz]:
-        instances = self._get_instance_set().filter(
+    async def list_by_id_in(self, ids: List[int]) -> List[models.Quiz]:
+        q = select(models.Quiz).where(
             quiz_task.modules.quiz.database.models.Quiz.id.in_(ids)
         )
-        return instances.all()
+        scalars = await self.session.scalars(q)
+        instances = scalars.all()
+        return list(instances)
     
 
     def add(self, instance: models.Quiz) -> models.Quiz:

@@ -19,6 +19,6 @@ async def obtain_questions(
         num_quizzes=quiz_request.questions_num,
         uow=uow,
     )
-    uow.commit()
+    await uow.commit()
 
     return [serializers.QuizResponse.from_orm(quiz) for quiz in quizzes]

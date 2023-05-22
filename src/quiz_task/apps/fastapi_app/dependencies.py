@@ -1,6 +1,7 @@
 import quiz_task.modules.quiz.unit_of_work
 
 
-def get_uow():
-    with quiz_task.modules.quiz.unit_of_work.SQLAlchemyQuizUnitOfWork() as uow:
+async def get_uow():
+    uow = quiz_task.modules.quiz.unit_of_work.SQLAlchemyQuizUnitOfWork()
+    async with uow:
         yield uow
