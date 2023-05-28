@@ -1,9 +1,6 @@
-from typing import Optional
-
 import sqlalchemy.ext.asyncio
 import sqlalchemy.orm
 
-import quiz_task.config
 from quiz_task.modules.quiz import repositories
 
 
@@ -32,13 +29,7 @@ class SQLAlchemyQuizUnitOfWork(AbstractQuizUnitOfWork):
     session: sqlalchemy.ext.asyncio.AsyncSession
 
 
-    def __init__(
-        self,
-        engine: Optional[sqlalchemy.ext.asyncio.AsyncEngine] = None,
-    ) -> None:
-        if engine is None:
-            engine = quiz_task.config.get_database_engine()
-        
+    def __init__(self, engine: sqlalchemy.ext.asyncio.AsyncEngine) -> None:
         self.session_factory = sqlalchemy.ext.asyncio.async_sessionmaker(
             bind=engine,
             expire_on_commit=False,

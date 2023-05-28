@@ -15,9 +15,3 @@ def get_postgres_connection_url() -> str:
     port = os.environ.get('POSTGRES_PORT', '5432')
     connection_url = f'postgresql+asyncpg://{username}:{password}@{host}:{port}/{db_name}'
     return connection_url
-
-
-def get_database_engine() -> sqlalchemy.ext.asyncio.AsyncEngine:
-    connection_url = get_postgres_connection_url()
-    engine = sqlalchemy.ext.asyncio.create_async_engine(url=connection_url)
-    return engine
