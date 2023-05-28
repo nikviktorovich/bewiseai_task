@@ -41,14 +41,14 @@ class FakeQuizRepository(quiz_task.modules.quiz.repositories.AbstractQuizReposit
         self.quiz_set = {quiz.id: quiz for quiz in data}
     
 
-    def list(
+    async def list(
         self,
         **filters,
     ) -> List[quiz_task.modules.quiz.domain.models.Quiz]:
         return list(self.quiz_set.values())
     
 
-    def get(
+    async def get(
         self,
         quiz_id: int,
     ) -> quiz_task.modules.quiz.domain.models.Quiz:
@@ -62,7 +62,7 @@ class FakeQuizRepository(quiz_task.modules.quiz.repositories.AbstractQuizReposit
         return instance
     
 
-    def list_by_id_in(
+    async def list_by_id_in(
         self,
         ids: List[int],
     ) -> List[quiz_task.modules.quiz.domain.models.Quiz]:
@@ -96,17 +96,17 @@ class FakeUnitOfWork(quiz_task.modules.quiz.unit_of_work.AbstractQuizUnitOfWork)
         self.quizzes = repository
 
 
-    def commit(self) -> None:
+    async def commit(self) -> None:
         pass
 
 
-    def rollback(self) -> None:
+    async def rollback(self) -> None:
         pass
     
 
-    def __enter__(self) -> quiz_task.modules.quiz.unit_of_work.AbstractQuizUnitOfWork:
+    async def __enter__(self) -> quiz_task.modules.quiz.unit_of_work.AbstractQuizUnitOfWork:
         return self
     
 
-    def __exit__(self, *args, **kwargs) -> None:
+    async def __exit__(self, *args, **kwargs) -> None:
         pass
