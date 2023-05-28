@@ -30,7 +30,7 @@ class FakeClient(quiz_task.services.jservice.AbstractAsyncQuestionsAPIClient):
         return self.data[begin:end]
 
 
-class FakeQuizRepository(quiz_task.modules.quiz.repositories.AbstractQuizRepository):
+class FakeQuizRepository(quiz_task.modules.quiz.repositories.QuizRepository):
     quiz_set: Dict[int, quiz_task.modules.quiz.domain.models.Quiz]
 
 
@@ -91,7 +91,7 @@ class FakeQuizRepository(quiz_task.modules.quiz.repositories.AbstractQuizReposit
         return instances
 
 
-class FakeUnitOfWork(quiz_task.modules.quiz.unit_of_work.AbstractQuizUnitOfWork):
+class FakeUnitOfWork(quiz_task.modules.quiz.unit_of_work.QuizUnitOfWork):
     def __init__(self, repository: FakeQuizRepository) -> None:
         self.quizzes = repository
 
@@ -104,7 +104,7 @@ class FakeUnitOfWork(quiz_task.modules.quiz.unit_of_work.AbstractQuizUnitOfWork)
         pass
     
 
-    async def __enter__(self) -> quiz_task.modules.quiz.unit_of_work.AbstractQuizUnitOfWork:
+    async def __enter__(self) -> quiz_task.modules.quiz.unit_of_work.QuizUnitOfWork:
         return self
     
 

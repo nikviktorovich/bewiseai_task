@@ -9,7 +9,7 @@ import quiz_task.modules.quiz.database.models
 from quiz_task.modules.quiz.domain import models
 
 
-class AbstractQuizRepository:
+class QuizRepository:
     """Abstract quiz repository"""
     async def list(self, **filters) -> List[models.Quiz]:
         """Returns list of all matching instances
@@ -44,7 +44,7 @@ class AbstractQuizRepository:
         raise NotImplementedError()
 
 
-class SQLAlchemyQuizRepository(AbstractQuizRepository):
+class SQLAlchemyQuizRepository(QuizRepository):
     """Quiz repository implementation bound to SQLAlchemy session"""
     session: sqlalchemy.ext.asyncio.AsyncSession
 

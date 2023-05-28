@@ -4,8 +4,8 @@ import sqlalchemy.orm
 from quiz_task.modules.quiz import repositories
 
 
-class AbstractQuizUnitOfWork:
-    quizzes: repositories.AbstractQuizRepository
+class QuizUnitOfWork:
+    quizzes: repositories.QuizRepository
 
 
     async def commit(self) -> None:
@@ -16,7 +16,7 @@ class AbstractQuizUnitOfWork:
         raise NotImplementedError()
     
 
-    async def __aenter__(self) -> 'AbstractQuizUnitOfWork':
+    async def __aenter__(self) -> 'QuizUnitOfWork':
         raise NotImplementedError()
     
 
@@ -24,7 +24,7 @@ class AbstractQuizUnitOfWork:
         raise NotImplementedError()
 
 
-class SQLAlchemyQuizUnitOfWork(AbstractQuizUnitOfWork):
+class SQLAlchemyQuizUnitOfWork(QuizUnitOfWork):
     session_factory: sqlalchemy.ext.asyncio.async_sessionmaker
     session: sqlalchemy.ext.asyncio.AsyncSession
 
@@ -44,7 +44,7 @@ class SQLAlchemyQuizUnitOfWork(AbstractQuizUnitOfWork):
         await self.session.rollback()
     
 
-    async def __aenter__(self) -> 'AbstractQuizUnitOfWork':
+    async def __aenter__(self) -> 'QuizUnitOfWork':
         self.session: sqlalchemy.ext.asyncio.AsyncSession = self.session_factory()
         self.quizzes = repositories.SQLAlchemyQuizRepository(self.session)
         return self

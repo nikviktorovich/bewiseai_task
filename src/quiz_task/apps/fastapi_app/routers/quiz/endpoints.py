@@ -13,7 +13,7 @@ router = fastapi.routing.APIRouter()
 @router.post('/quiz')
 async def obtain_questions(
     quiz_request: serializers.QuizRequest,
-    uow: unit_of_work.AbstractQuizUnitOfWork = Depends(dependencies.get_uow),
+    uow: unit_of_work.QuizUnitOfWork = Depends(dependencies.get_uow),
 ):
     quizzes = await quiz_task.services.quizzes.retrieve_unique_quizzes(
         num_quizzes=quiz_request.questions_num,
