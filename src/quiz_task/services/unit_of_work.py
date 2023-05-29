@@ -1,11 +1,11 @@
 import sqlalchemy.ext.asyncio
 import sqlalchemy.orm
 
-from quiz_task.modules.quiz import repositories
+import quiz_task.modules.quiz.repositories
 
 
 class QuizUnitOfWork:
-    quizzes: repositories.QuizRepository
+    quizzes: quiz_task.modules.quiz.repositories.QuizRepository
 
 
     async def commit(self) -> None:
@@ -46,7 +46,9 @@ class SQLAlchemyQuizUnitOfWork(QuizUnitOfWork):
 
     async def __aenter__(self) -> 'QuizUnitOfWork':
         self.session: sqlalchemy.ext.asyncio.AsyncSession = self.session_factory()
-        self.quizzes = repositories.SQLAlchemyQuizRepository(self.session)
+        self.quizzes = quiz_task.modules.quiz.repositories.SQLAlchemyQuizRepository(
+            self.session,
+        )
         return self
     
 
