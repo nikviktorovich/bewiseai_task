@@ -4,7 +4,7 @@ from fastapi import Depends
 import quiz_task.services.quizzes
 from quiz_task.apps.fastapi_app import dependencies
 from quiz_task.apps.fastapi_app.routers.quiz import serializers
-from quiz_task.modules.quiz import unit_of_work
+from quiz_task.services import unit_of_work
 
 
 router = fastapi.routing.APIRouter()

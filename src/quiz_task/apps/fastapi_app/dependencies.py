@@ -2,7 +2,7 @@ import sqlalchemy.ext.asyncio
 from fastapi import Depends
 
 import quiz_task.config
-import quiz_task.modules.quiz.unit_of_work
+import quiz_task.services.unit_of_work
 
 
 def get_database_engine() -> sqlalchemy.ext.asyncio.AsyncEngine:
@@ -14,6 +14,6 @@ def get_database_engine() -> sqlalchemy.ext.asyncio.AsyncEngine:
 async def get_uow(
     engine: sqlalchemy.ext.asyncio.AsyncEngine = Depends(get_database_engine),
 ):
-    uow = quiz_task.modules.quiz.unit_of_work.SQLAlchemyQuizUnitOfWork(engine)
+    uow = quiz_task.services.unit_of_work.SQLAlchemyQuizUnitOfWork(engine)
     async with uow:
         yield uow

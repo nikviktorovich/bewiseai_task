@@ -3,7 +3,7 @@ from typing import List
 
 import quiz_task.modules.quiz.domain.models
 import quiz_task.modules.quiz.repositories
-import quiz_task.modules.quiz.unit_of_work
+import quiz_task.services.unit_of_work
 import quiz_task.services.quizzes
 from . import common
 

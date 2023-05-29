@@ -2,7 +2,7 @@ from typing import List
 from typing import Set
 
 import quiz_task.modules.quiz.domain.models
-import quiz_task.modules.quiz.unit_of_work
+import quiz_task.services.unit_of_work
 import quiz_task.services.jservice
 
 
@@ -12,7 +12,7 @@ MAX_COUNT = 100
 
 async def retrieve_unique_quizzes(
     num_quizzes: int,
-    uow: quiz_task.modules.quiz.unit_of_work.QuizUnitOfWork,
+    uow: quiz_task.services.unit_of_work.QuizUnitOfWork,
 ) -> List[quiz_task.modules.quiz.domain.models.Quiz]:
     """Retrieves specified amount of unique quizzes"""
     async with quiz_task.services.jservice.AsyncQuestionsAPIClient() as client:
@@ -25,7 +25,7 @@ async def retrieve_unique_quizzes(
 
 async def _retrieve_unique_quizzes(
     num_quizzes: int,
-    uow: quiz_task.modules.quiz.unit_of_work.QuizUnitOfWork,
+    uow: quiz_task.services.unit_of_work.QuizUnitOfWork,
     client: quiz_task.services.jservice.AbstractAsyncQuestionsAPIClient,
 ) -> List[quiz_task.modules.quiz.domain.models.Quiz]:
     result_quizzes: List[quiz_task.modules.quiz.domain.models.Quiz] = []
@@ -52,7 +52,7 @@ async def _retrieve_unique_quizzes(
 
 async def _filter_quizzes(
     quizzes: List[quiz_task.modules.quiz.domain.models.Quiz],
-    uow: quiz_task.modules.quiz.unit_of_work.QuizUnitOfWork,
+    uow: quiz_task.services.unit_of_work.QuizUnitOfWork,
 ) -> List[quiz_task.modules.quiz.domain.models.Quiz]:
     quiz_ids = [quiz.id for quiz in quizzes]
     non_unique_quizzes = await uow.quizzes.list_by_id_in(quiz_ids)

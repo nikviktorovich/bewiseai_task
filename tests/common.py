@@ -4,7 +4,7 @@ from typing import List
 import quiz_task.common.errors
 import quiz_task.modules.quiz.domain.models
 import quiz_task.modules.quiz.repositories
-import quiz_task.modules.quiz.unit_of_work
+import quiz_task.services.unit_of_work
 import quiz_task.services.jservice
 
 
@@ -91,7 +91,7 @@ class FakeQuizRepository(quiz_task.modules.quiz.repositories.QuizRepository):
         return instances
 
 
-class FakeUnitOfWork(quiz_task.modules.quiz.unit_of_work.QuizUnitOfWork):
+class FakeUnitOfWork(quiz_task.services.unit_of_work.QuizUnitOfWork):
     def __init__(self, repository: FakeQuizRepository) -> None:
         self.quizzes = repository
 
@@ -104,7 +104,7 @@ class FakeUnitOfWork(quiz_task.modules.quiz.unit_of_work.QuizUnitOfWork):
         pass
     
 
-    async def __enter__(self) -> quiz_task.modules.quiz.unit_of_work.QuizUnitOfWork:
+    async def __enter__(self) -> quiz_task.services.unit_of_work.QuizUnitOfWork:
         return self
     
 
